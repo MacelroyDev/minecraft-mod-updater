@@ -1,5 +1,7 @@
 # minecraft-mod-updater
 
+Tired of your friends asking you how to add new mods to minecraft? Then this is the perfect solution for you! I know mod launchers exist but this is for those who still like adding mods the old-fashioned way. I also used this project as a way to start learning and practice Golang.
+
 ## 🚀 Minecraft Mod Pack Auto-Updater
 
 A simple, single-file Go application that automatically downloads and installs the latest version of a Minecraft mod pack to the user's local **mods** folder.
