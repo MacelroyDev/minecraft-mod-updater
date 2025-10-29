@@ -1,43 +1,47 @@
+// ===========================================
+// Minecraft Mod Pack Auto-Updater
+// Created by: MacelroyDev
+// Date: October 2025
+// ===========================================
 package main
 
 import (
 	"fmt"
 	"os"
-	"path/filepath"
-	"runtime"
 )
 
-func getModsFolder() (string, error) {
-	// := is a short-declare operator, no need to set type
-	home, err := os.UserHomeDir()
-	// check for error
-	if err != nil {
-		return "", err
-	}
-
-	var path string
-	switch runtime.GOOS {
-	case "windows":
-		appdata := os.Getenv("APPDATA")
-		path = filepath.Join(appdata, ".minecraft", "mods")
-	case "darwin": // macOS
-		// File path for macOS was given by gemini as I don't use mac lol, may be incorrect
-		path = filepath.Join(home, "Library", "Application Support", "minecraft", "mods")
-	case "linux":
-		path = filepath.Join(home, ".minecraft", "mods")
-	default:
-		return "", fmt.Errorf("unsupported operating system: %s", runtime.GOOS)
-	}
-
-	// Double check path exists
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return "", fmt.Errorf("minecraft mods folder not found at %s", path)
-	}
-
-	return path, nil
-}
-
 func main() {
-	fmt.Println("Starting Minecraft Mod Updater...")
-	// core logic will go here
+	fmt.Println("=====================================")
+	fmt.Println("   Minecraft Mod Pack Auto-Updater   ")
+	fmt.Println("=====================================")
+
+	// Locate the mods folder
+	modsPath, err := getModsFolder()
+	if err != nil {
+		fmt.Printf("ERROR: %v\n", err)
+		fmt.Println("Update failed. Press Enter to exit...")
+		fmt.Scanln() // Wait for user input to keep the console open
+		os.Exit(1)
+	}
+
+	// Get the latest URL
+	latestURL, err := getLatestModPackURL()
+	if err != nil {
+		fmt.Printf("ERROR fetching update link: %v\n", err)
+		fmt.Println("Update failed. Press Enter to exit...")
+		fmt.Scanln()
+		os.Exit(1)
+	}
+
+	// Download and extract the new files
+	if err := downloadAndExtract(modsPath, latestURL); err != nil {
+		fmt.Printf("ERROR during download/extraction: %v\n", err)
+		fmt.Println("Update failed. Press Enter to exit...")
+		fmt.Scanln()
+		os.Exit(1)
+	}
+
+	fmt.Println("ALL DONE! Your mod pack is now up-to-date!")
+	fmt.Println("Press Enter to exit...")
+	fmt.Scanln()
 }
